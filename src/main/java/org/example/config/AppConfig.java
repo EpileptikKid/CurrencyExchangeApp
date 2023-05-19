@@ -54,6 +54,7 @@ public class AppConfig implements WebMvcConfigurer {
         return dataSource;
     }
 
+
     @Bean
     public JdbcTemplate jdbcTemplate(DataSource dataSource) {
         return new JdbcTemplate(dataSource);

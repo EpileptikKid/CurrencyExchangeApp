@@ -1,7 +1,7 @@
 package org.example.service;
 
+import javafx.util.Pair;
 import org.example.model.CurrencyExchangeOperation;
-import org.example.model.OperationDateType;
 import org.example.repository.ExchangeOperationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,13 +36,13 @@ public class ExchangeOperationService {
         return repository.findAllOperation().stream().filter(CurrencyExchangeOperation::isStatus).collect(Collectors.toList());
     }
 
-    public Map<OperationDateType, Double> getAllOperationsGroupBy(String groupBy) {
+    public Map<Pair<Object, String>, Double> getAllOperationsGroupBy(String groupBy) {
         List<CurrencyExchangeOperation> operations = repository.findAllOperation();
 
         return operations.stream()
                 .filter(CurrencyExchangeOperation::isStatus)
                 .collect(Collectors.groupingBy(
-                        operation -> new OperationDateType(
+                        operation -> new Pair<Object, String>(
                                 getDate(groupBy, operation),
                                 operation.getOperation()),
                         Collectors.summingDouble(CurrencyExchangeOperation::getAmount)

@@ -45,8 +45,8 @@
     <tbody>
     <c:forEach items="${groupedOperations}" var="entry">
       <tr>
-        <td>${entry.key.date}</td>
-        <td>${entry.key.operation}</td>
+        <td>${entry.key.key}</td>
+        <td>${entry.key.value}</td>
         <td>${entry.value}</td>
       </tr>
     </c:forEach>
