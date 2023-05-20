@@ -1,13 +1,15 @@
 package org.example.repository;
 
 import org.example.model.Currency;
-import org.example.model.CurrencyList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class JdbcCurrencyRateRepository {
@@ -19,15 +21,16 @@ public class JdbcCurrencyRateRepository {
         this.dataSource = dataSource;
     }
 
-    public CurrencyList findAllCurrencies() {
-        CurrencyList currencies = new CurrencyList();
-        try (PreparedStatement preparedStatement =
-                dataSource.getConnection().prepareStatement(
-                        CurrencyQueries.SELECT_ALL_CURRENCIES)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
+    public List<Currency> findAllCurrencies() {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     PreparedQueries.SELECT_ALL_CURRENCIES)) {
+
+            ResultSet resultSet = statement.executeQuery();
+            List<Currency> currencies = new ArrayList<>();
 
             while (resultSet.next()) {
-                currencies.addCurrency(mapResultSetToCurrency(resultSet));
+                currencies.add(mapResultSetToCurrency(resultSet));
             }
             return currencies;
         } catch (SQLException e) {
@@ -36,9 +39,9 @@ public class JdbcCurrencyRateRepository {
     }
 
     public boolean addCurrency(Currency currency) {
-        try (PreparedStatement statement =
-                dataSource.getConnection().prepareStatement(
-                        CurrencyQueries.ADD_CURRENCY)) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     PreparedQueries.ADD_CURRENCY)) {
 
             setCurrencyParameters(statement, currency);
             int rowsAdded = statement.executeUpdate();
@@ -50,9 +53,9 @@ public class JdbcCurrencyRateRepository {
     }
 
     public boolean updateCurrency(Currency currency) {
-        try (PreparedStatement statement =
-                dataSource.getConnection().prepareStatement(
-                        CurrencyQueries.UPDATE_CURRENCY)) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     PreparedQueries.UPDATE_CURRENCY)) {
 
             statement.setFloat(1, currency.getBuy());
             statement.setFloat(2, currency.getSale());
@@ -68,13 +71,12 @@ public class JdbcCurrencyRateRepository {
     }
 
     public Currency getCurrencyByCcy(String ccy) {
-        try (PreparedStatement preparedStatement =
-                dataSource.getConnection().prepareStatement(
-                        CurrencyQueries.SELECT_CURRENCY_BY_CCY
-                )) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     PreparedQueries.SELECT_CURRENCY_BY_CCY)) {
 
-            preparedStatement.setString(1, ccy);
-            ResultSet resultSet = preparedStatement.executeQuery();
+            statement.setString(1, ccy);
+            ResultSet resultSet = statement.executeQuery();
             return resultSet.next() ? mapResultSetToCurrency(resultSet) : null;
 
         } catch (SQLException e) {
@@ -83,14 +85,13 @@ public class JdbcCurrencyRateRepository {
     }
 
     public boolean deleteCurrencyByCcy(String ccy) {
-        try (PreparedStatement preparedStatement =
-                dataSource.getConnection().prepareStatement(
-                        CurrencyQueries.DELETE_CURRENCY_BY_CCY_AND_BASE_CCY
-                )) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(
+                     PreparedQueries.DELETE_CURRENCY_BY_CCY_AND_BASE_CCY)) {
 
-            preparedStatement.setString(1, ccy);
-            int rowsDeleted = preparedStatement.executeUpdate();
+            statement.setString(1, ccy);
 
+            int rowsDeleted = statement.executeUpdate();
             return rowsDeleted > 0;
 
         } catch (SQLException e) {

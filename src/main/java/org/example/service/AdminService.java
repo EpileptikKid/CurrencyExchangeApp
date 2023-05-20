@@ -6,7 +6,6 @@ import org.example.repository.ExchangeOperationRepository;
 import org.example.repository.JdbcCurrencyRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +36,7 @@ public class AdminService {
     }
 
     public List<Currency> getAllCurrencies() {
-       return currencyRepository.findAllCurrencies().getCurrencies();
+       return currencyRepository.findAllCurrencies();
     }
 
     public Currency getCurrencyByCcy(String ccy) {

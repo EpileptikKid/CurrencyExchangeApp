@@ -1,10 +1,11 @@
 package org.example.service;
 
 import org.example.model.Currency;
-import org.example.model.CurrencyList;
 import org.example.repository.JdbcCurrencyRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class RestCurrencyService {
@@ -15,7 +16,7 @@ public class RestCurrencyService {
         this.repository = repository;
     }
 
-    public CurrencyList findAllCurrencies() {
+    public List<Currency> findAllCurrencies() {
         return repository.findAllCurrencies();
     }
 

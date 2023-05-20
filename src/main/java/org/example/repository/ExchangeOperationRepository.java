@@ -20,14 +20,14 @@ public class ExchangeOperationRepository {
 
     public List<CurrencyExchangeOperation> findAllOperation() {
 
-        return jdbcTemplate.query(
-                ExchangeOperationQueries.FIND_ALL_OPERATIONS,
+        return  jdbcTemplate.query(
+                PreparedQueries.FIND_ALL_OPERATIONS,
                 new BeanPropertyRowMapper<>(CurrencyExchangeOperation.class));
     }
 
     public void addExchangeOperation(CurrencyExchangeOperation operation) {
         try {
-            jdbcTemplate.update(ExchangeOperationQueries.ADD_OPERATION,
+            jdbcTemplate.update(PreparedQueries.ADD_OPERATION,
                     operation.getDate(), operation.getCurrency(), operation.getRate(), operation.getOperation(), operation.getAmount());
         } catch (DataIntegrityViolationException e) {
             System.out.println("Parameter exception");
@@ -35,10 +35,10 @@ public class ExchangeOperationRepository {
     }
 
     public void deleteExchangeOperationById(int id) {
-        jdbcTemplate.update(ExchangeOperationQueries.SET_OPERATION_STATUS_FALSE_BY_ID, id);
+        jdbcTemplate.update(PreparedQueries.SET_OPERATION_STATUS_FALSE_BY_ID, id);
     }
 
     public void restoreExchangeOperationById(int id) {
-        jdbcTemplate.update(ExchangeOperationQueries.SET_OPERATION_STATUS_TRUE_BY_ID, id);
+        jdbcTemplate.update(PreparedQueries.SET_OPERATION_STATUS_TRUE_BY_ID, id);
     }
 }

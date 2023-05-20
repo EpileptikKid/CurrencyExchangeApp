@@ -14,10 +14,10 @@ import java.util.List;
 public class CurrencyList {
     @JacksonXmlProperty(localName = "currency")
     @JacksonXmlElementWrapper(useWrapping = false)
-    private final List<Currency> currencies;
+    private final List<Currency> currencies = new ArrayList<>();
 
-    public CurrencyList() {
-        currencies = new ArrayList<>();
+    public CurrencyList(List<Currency> currencyList) {
+        currencies.addAll(currencyList);
     }
 
     public void addCurrency(Currency currency) {

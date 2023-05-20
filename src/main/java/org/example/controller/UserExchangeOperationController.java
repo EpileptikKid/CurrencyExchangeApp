@@ -1,9 +1,7 @@
 package org.example.controller;
 
 import org.example.model.Currency;
-import org.example.model.CurrencyExchangeOperation;
 import org.example.service.ExchangeOperationService;
-import org.example.service.RestCurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,18 +13,16 @@ import java.util.List;
 @RequestMapping("/user")
 public class UserExchangeOperationController {
 
-    private final ExchangeOperationService exchangeOperationService;
-    private final RestCurrencyService currencyService;
+    private final ExchangeOperationService service;
 
     @Autowired
-    public UserExchangeOperationController(ExchangeOperationService exchangeOperationService, RestCurrencyService currencyService) {
-        this.exchangeOperationService = exchangeOperationService;
-        this.currencyService = currencyService;
+    public UserExchangeOperationController(ExchangeOperationService service) {
+        this.service = service;
     }
 
     @GetMapping("/exchange")
     public String exchangePage(Model model) {
-        List<Currency> currencies = currencyService.findAllCurrencies().getCurrencies();
+        List<Currency> currencies = service.getAllCurrencies();
         model.addAttribute("currencies", currencies);
         return "exchange";
     }
@@ -34,17 +30,16 @@ public class UserExchangeOperationController {
     @GetMapping("/journal")
     public String journalPage(Model model, @RequestParam(value = "groupBy", required = false) String groupBy) {
         if (groupBy == null) {
-            List<CurrencyExchangeOperation> exchangeOperationList = exchangeOperationService.getAllOperations();
-            model.addAttribute("exchangeOperationList", exchangeOperationList);
+            model.addAttribute("exchangeOperationList", service.getAllOperations());
         } else {
-            model.addAttribute("groupedOperations", exchangeOperationService.getAllOperationsGroupBy(groupBy));
+            model.addAttribute("groupedOperations", service.getAllOperationsGroupBy(groupBy));
         }
         return "journal";
     }
 
     @GetMapping("/currencies")
     public String currenciesPage(Model model) {
-        model.addAttribute("currencies", currencyService.findAllCurrencies().getCurrencies());
+        model.addAttribute("currencies", service.getAllOperations());
         return "catalog";
     }
 
@@ -53,7 +48,7 @@ public class UserExchangeOperationController {
                                        @RequestParam("operation") String operation,
                                        @RequestParam("rate") float rate,
                                        @RequestParam("amount") float amount) {
-        exchangeOperationService.addExchangeOperation(currency, operation, rate, amount);
+        service.addExchangeOperation(currency, operation, rate, amount);
         return new RedirectView("/user/exchange");
     }
 }

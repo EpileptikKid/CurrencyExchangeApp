@@ -10,6 +10,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/currency_rates")
 public class RestCurrencyController {
@@ -25,37 +27,28 @@ public class RestCurrencyController {
     public ResponseEntity<?> getCurrencyRates(
             @RequestParam(value = "json", required = false) String json) {
 
-        CurrencyList currencies = service.findAllCurrencies();
+        List<Currency> currencies = service.findAllCurrencies();
         HttpHeaders headers = new HttpHeaders();
-        if (currencies.getCurrencies().isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("no content");
-        } else {
-            if (json != null) {
-                headers.setContentType(MediaType.APPLICATION_JSON);
-                return new ResponseEntity<>(currencies.getCurrencies(), headers, HttpStatus.OK);
-            } else {
-                headers.setContentType(MediaType.APPLICATION_XML);
-                return new ResponseEntity<>(currencies, headers, HttpStatus.OK);
-            }
-        }
+        headers.setContentType(checkMediaType(json));
+
+        return new ResponseEntity<>(
+                json == null ? new CurrencyList(currencies)
+                             : currencies,
+                headers,
+                HttpStatus.OK);
     }
 
 
     @GetMapping("/{ccy}")
     public ResponseEntity<Currency> getCurrencyRateByCcy(@PathVariable String ccy,
                                                          @RequestParam(value = "json", required = false) String json) {
-        HttpHeaders headers = new HttpHeaders();
-
-        if (json != null) {
-            headers.setContentType(MediaType.APPLICATION_JSON);
-        } else {
-            headers.setContentType(MediaType.APPLICATION_XML);
-        }
 
         Currency currency = service.getCurrencyByCcy(ccy);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(checkMediaType(json));
 
-        return currency != null ? new ResponseEntity<>(currency, headers, HttpStatus.OK)
-                                : ResponseEntity.notFound().build();
+        return currency == null ? ResponseEntity.notFound().build()
+                                : new ResponseEntity<>(currency, headers, HttpStatus.OK);
     }
 
     @PostMapping
@@ -85,6 +78,11 @@ public class RestCurrencyController {
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("This currency does not exist");
         }
+    }
+
+    private MediaType checkMediaType(String checkStr) {
+        return checkStr == null ? MediaType.APPLICATION_XML
+                                : MediaType.APPLICATION_JSON;
     }
 
 }

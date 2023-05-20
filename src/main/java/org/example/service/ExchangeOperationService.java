@@ -1,8 +1,9 @@
 package org.example.service;
 
-import javafx.util.Pair;
+import org.example.model.Currency;
 import org.example.model.CurrencyExchangeOperation;
 import org.example.repository.ExchangeOperationRepository;
+import org.example.repository.JdbcCurrencyRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
@@ -15,49 +16,60 @@ import java.util.stream.Collectors;
 @Service
 public class ExchangeOperationService {
 
-    private final ExchangeOperationRepository repository;
+    private final ExchangeOperationRepository exchangeRepository;
+    private final JdbcCurrencyRateRepository currencyRepository;
 
     @Autowired
-    public ExchangeOperationService(ExchangeOperationRepository repository) {
-        this.repository = repository;
+    public ExchangeOperationService(ExchangeOperationRepository exchangeRepository,
+                                    JdbcCurrencyRateRepository currencyRepository) {
+        this.exchangeRepository = exchangeRepository;
+        this.currencyRepository = currencyRepository;
     }
 
-    public void addExchangeOperation(String currency, String operation, float rate, float amount) {
-        CurrencyExchangeOperation exchangeOperation = new CurrencyExchangeOperation();
-        exchangeOperation.setDate(LocalDateTime.now());
-        exchangeOperation.setCurrency(currency);
-        exchangeOperation.setRate(rate);
-        exchangeOperation.setOperation(operation);
-        exchangeOperation.setAmount(amount);
-        repository.addExchangeOperation(exchangeOperation);
+    public void addExchangeOperation(String currency, String typeOperation, float rate, float amount) {
+        CurrencyExchangeOperation operation = new CurrencyExchangeOperation();
+        operation.setDate(LocalDateTime.now());
+        operation.setCurrency(currency);
+        operation.setRate(rate);
+        operation.setOperation(typeOperation);
+        operation.setAmount(amount);
+        exchangeRepository.addExchangeOperation(operation);
+    }
+
+    public List<Currency> getAllCurrencies() {
+        return currencyRepository.findAllCurrencies();
     }
 
     public List<CurrencyExchangeOperation> getAllOperations() {
-        return repository.findAllOperation().stream().filter(CurrencyExchangeOperation::isStatus).collect(Collectors.toList());
+        return exchangeRepository.findAllOperation().stream()
+                .filter(CurrencyExchangeOperation::isStatus)
+                .collect(Collectors.toList());
     }
 
-    public Map<Pair<Object, String>, Double> getAllOperationsGroupBy(String groupBy) {
-        List<CurrencyExchangeOperation> operations = repository.findAllOperation();
+    public Map<Object, Map<String, Double>> getAllOperationsGroupBy(String groupBy) {
+        List<CurrencyExchangeOperation> operations = exchangeRepository.findAllOperation();
 
         return operations.stream()
                 .filter(CurrencyExchangeOperation::isStatus)
                 .collect(Collectors.groupingBy(
-                        operation -> new Pair<Object, String>(
-                                getDate(groupBy, operation),
-                                operation.getOperation()),
-                        Collectors.summingDouble(CurrencyExchangeOperation::getAmount)
+                        operation -> getDate(groupBy, operation.getDate()),
+                        Collectors.groupingBy(CurrencyExchangeOperation::getOperation,
+                                Collectors.summingDouble(CurrencyExchangeOperation::getAmount))
                 ));
     }
 
 
-    private Object getDate(String groupBy, CurrencyExchangeOperation operation) {
+    private Object getDate(String groupBy, LocalDateTime date) {
         switch (groupBy) {
             case "day":
-                return operation.getDate().toLocalDate();
+                return date.toLocalDate();
             case "month":
-                return YearMonth.from(operation.getDate());
+                return YearMonth.from(date);
+            case "quartet":
+                return (date.getMonth().getValue() / 4) + 1
+                        + "-й квартал " + date.getYear();
             default:
-                return Year.from(operation.getDate());
+                return Year.from(date);
         }
     }
 
