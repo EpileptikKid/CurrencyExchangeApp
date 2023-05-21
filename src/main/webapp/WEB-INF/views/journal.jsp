@@ -23,7 +23,7 @@
   <tbody>
   <c:forEach items="${exchangeOperationList}" var="exchangeOperation">
     <tr>
-      <td>${exchangeOperation.date.truncatedTo()}</td>
+      <td>${exchangeOperation.date}</td>
       <td>${exchangeOperation.currency}</td>
       <td>${exchangeOperation.rate}</td>
       <td>${exchangeOperation.operation}</td>

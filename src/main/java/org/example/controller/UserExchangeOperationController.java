@@ -39,7 +39,7 @@ public class UserExchangeOperationController {
 
     @GetMapping("/currencies")
     public String currenciesPage(Model model) {
-        model.addAttribute("currencies", service.getAllOperations());
+        model.addAttribute("currencies", service.getAllCurrencies());
         return "catalog";
     }
 
