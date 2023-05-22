@@ -1,6 +1,7 @@
 package org.example.controller;
 
 import org.example.model.Currency;
+import org.example.model.CurrencyExchangeOperation;
 import org.example.service.ExchangeOperationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +25,7 @@ public class UserExchangeOperationController {
     public String exchangePage(Model model) {
         List<Currency> currencies = service.getAllCurrencies();
         model.addAttribute("currencies", currencies);
+        model.addAttribute("newOperation", new CurrencyExchangeOperation());
         return "exchange";
     }
 
@@ -44,11 +46,8 @@ public class UserExchangeOperationController {
     }
 
     @PostMapping()
-    public RedirectView addExchangeLog(@RequestParam("currency") String currency,
-                                       @RequestParam("operation") String operation,
-                                       @RequestParam("rate") float rate,
-                                       @RequestParam("amount") float amount) {
-        service.addExchangeOperation(currency, operation, rate, amount);
+    public RedirectView addExchangeLog(@ModelAttribute("newOperation") CurrencyExchangeOperation operation) {
+        service.addExchangeOperation(operation);
         return new RedirectView("/user/exchange");
     }
 }

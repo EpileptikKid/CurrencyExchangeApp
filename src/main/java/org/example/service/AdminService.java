@@ -6,7 +6,6 @@ import org.example.repository.ExchangeOperationRepository;
 import org.example.repository.JdbcCurrencyRateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -26,9 +25,7 @@ public class AdminService {
     }
 
     public List<CurrencyExchangeOperation> getAllOperations() {
-        List<CurrencyExchangeOperation> operations = journalRepository.findAllOperation();
-        Collections.sort(operations);
-        return operations;
+        return journalRepository.findAllOperation();
     }
 
     public void restoreExchangeOperationById(int id) {

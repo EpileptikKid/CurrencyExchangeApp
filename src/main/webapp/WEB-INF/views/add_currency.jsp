@@ -19,7 +19,7 @@
   <label for="sale">Курс продажу:</label>
   <input type="number" step="any" id="sale" name="sale" value="${currency.sale}" />
   <br/>
-  <input type="submit" value="Додати">
+  <input type="submit" value="Додати" class="btn">
 </form>
 
 <div class="button-container">

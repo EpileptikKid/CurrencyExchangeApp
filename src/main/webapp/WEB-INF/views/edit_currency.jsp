@@ -1,10 +1,10 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
 <head>
   <title>Обмін валют</title>
-  <link rel="stylesheet" type="text/css" href="/resources/static/css/exchange.css">
+  <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/static/css/exchange.css">
 </head>
 <body>
 
@@ -19,7 +19,7 @@
   <label for="sale">Курс продажу:</label>
   <input type="number" step="any" id="sale" name="sale" value="${currency.sale}" />
   <br/>
-  <input type="submit" value="Зберегти">
+  <input type="submit" value="Зберегти" class="btn">
 </form>
 
 <div class="button-container">

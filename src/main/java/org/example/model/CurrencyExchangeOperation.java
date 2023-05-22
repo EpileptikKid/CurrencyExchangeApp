@@ -7,7 +7,7 @@ import java.util.Objects;
     Клас для представлення сутності запису в журналі операцій обміну валют
  */
 
-public class CurrencyExchangeOperation implements Comparable {
+public class CurrencyExchangeOperation {
 
     private long id;
     private LocalDateTime date;
@@ -84,11 +84,6 @@ public class CurrencyExchangeOperation implements Comparable {
     @Override
     public int hashCode() {
         return Objects.hash(date, currency, rate, operation, amount, status);
-    }
-
-    @Override
-    public int compareTo(Object o) {
-        return this.date.compareTo(((CurrencyExchangeOperation) o).getDate());
     }
 
     @Override

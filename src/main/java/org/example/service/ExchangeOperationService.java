@@ -26,13 +26,8 @@ public class ExchangeOperationService {
         this.currencyRepository = currencyRepository;
     }
 
-    public void addExchangeOperation(String currency, String typeOperation, float rate, float amount) {
-        CurrencyExchangeOperation operation = new CurrencyExchangeOperation();
+    public void addExchangeOperation(CurrencyExchangeOperation operation) {
         operation.setDate(LocalDateTime.now());
-        operation.setCurrency(currency);
-        operation.setRate(rate);
-        operation.setOperation(typeOperation);
-        operation.setAmount(amount);
         exchangeRepository.addExchangeOperation(operation);
     }
 
