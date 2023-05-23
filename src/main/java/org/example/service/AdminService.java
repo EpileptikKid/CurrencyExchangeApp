@@ -40,21 +40,13 @@ public class AdminService {
         return currencyRepository.getCurrencyByCcy(ccy);
     }
 
-    public void updateCurrencyByCcy(String ccy, float buy, float sale) {
-        Currency currency = new Currency();
-        currency.setCcy(ccy);
+    public void updateCurrencyByCcy(Currency currency) {
         currency.setBase_ccy("UAH");
-        currency.setBuy(buy);
-        currency.setSale(sale);
         currencyRepository.updateCurrency(currency);
     }
 
-    public void addCurrency(String ccy, float buy, float sale) {
-        Currency currency = new Currency();
-        currency.setCcy(ccy);
+    public void addCurrency(Currency currency) {
         currency.setBase_ccy("UAH");
-        currency.setBuy(buy);
-        currency.setSale(sale);
         currencyRepository.addCurrency(currency);
     }
 

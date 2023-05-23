@@ -7,8 +7,11 @@
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/static/css/journal.css">
 </head>
 <body>
+<div class="container">
+  <a href="/admin/currencies">Курси валют</a>
+  <a href="${pageContext.request.contextPath}/">Назад</a>
+</div>
 <h1>Список проведених обмінів</h1>
-
   <table>
     <thead>
     <tr>
@@ -50,13 +53,5 @@
     </c:forEach>
     </tbody>
   </table>
-
-<div class="container">
-  <a href="/admin/currencies">Курси валют</a>
-  <a href="${pageContext.request.contextPath}/">Назад</a>
-</div>
-
-
-
 </body>
 </html>

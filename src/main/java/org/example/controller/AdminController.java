@@ -1,5 +1,6 @@
 package org.example.controller;
 
+import org.example.model.Currency;
 import org.example.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,8 @@ public class AdminController {
     }
 
     @GetMapping("/currencies/add")
-    public String addCurrencyPage() {
+    public String addCurrencyPage(Model model) {
+        model.addAttribute("addedCurrencies", new Currency());
         return "add_currency";
     }
 
@@ -55,21 +57,15 @@ public class AdminController {
     }
 
     @PostMapping("/currencies/update")
-    public String updateCurrencyByCcy(@RequestParam("ccy") String ccy,
-                                      @RequestParam("buy") float buy,
-                                      @RequestParam("sale") float sale,
-                                      Model model) {
-        service.updateCurrencyByCcy(ccy, buy, sale);
+    public String updateCurrencyByCcy(@ModelAttribute("addedCurrencies") Currency currency, Model model) {
+        service.updateCurrencyByCcy(currency);
         model.addAttribute("currencies", service.getAllCurrencies());
         return "admin_catalog";
     }
 
     @PostMapping("currencies/add")
-    public String addCurrency(@RequestParam("ccy") String ccy,
-                              @RequestParam("buy") float buy,
-                              @RequestParam("sale") float sale,
-                              Model model) {
-        service.addCurrency(ccy, buy, sale);
+    public String addCurrency(@ModelAttribute("addedCurrencies") Currency currency, Model model) {
+        service.addCurrency(currency);
         model.addAttribute("currencies", service.getAllCurrencies());
         return "admin_catalog";
     }

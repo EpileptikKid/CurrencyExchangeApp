@@ -6,6 +6,10 @@
   <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/static/css/journal.css">
 </head>
 <body>
+<div class="container">
+  <a href="/admin/currencies/add">Додати</a>
+  <a href="/admin/journal">Назад</a>
+</div>
 <h1>Курси валют</h1>
 <table>
   <thead>
@@ -36,9 +40,6 @@
   </c:forEach>
   </tbody>
 </table>
-<div class="container">
-<a href="/admin/currencies/add">Додати</a>
-<a href="/admin/journal">Назад</a>
-</div>
+
 </body>
 </html>

@@ -20,7 +20,8 @@ form {
 }
 
 select,
-input[type="number"] {
+input[type="number"],
+input[type="text"] {
     width: 560px;
     padding: 5px;
     border: 1px solid #ccc;

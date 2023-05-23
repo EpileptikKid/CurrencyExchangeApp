@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,18 +10,26 @@
 <body>
 
 <h1>Змінити курс обміну</h1>
-<form action="/admin/currencies/update" method="POST">
-  <label for="ccy">Код валюти: ${currency.ccy}</label>
-  <input type="hidden" id="ccy" name="ccy" value="${currency.ccy}" />
-  <br/>
-  <label for="buy">Курс купівлі:</label>
-  <input type="number" step="any" id="buy" name="buy" value="${currency.buy}" />
-  <br/>
-  <label for="sale">Курс продажу:</label>
-  <input type="number" step="any" id="sale" name="sale" value="${currency.sale}" />
-  <br/>
-  <input type="submit" value="Зберегти" class="btn">
-</form>
+<form:form action="/admin/currencies/update" method="post" modelAttribute="currency">
+  <div class="div_container">
+    <label for="ccy">Код валюти:</label>
+    <form:input path="ccy" type="text" id="ccy" value="${currency.ccy}" readonly="true"/>
+  </div>
+
+  <div class="div_container">
+    <label for="buy">Курс купівлі:</label>
+    <form:input path="buy" id="buy" type="number" step="any" value="${currency.buy}"/>
+  </div>
+
+  <div class="div_container">
+    <label for="sale">Курс купівлі:</label>
+    <form:input path="sale" id="sale" type="number" step="any" value="${currency.sale}"/>
+  </div>
+
+  <div class="div_container">
+    <input class="btn" type="submit" value="Змінити">
+  </div>
+</form:form>
 
 <div class="button-container">
   <a href="/admin/currencies" class="btn">Курси валют</a>
