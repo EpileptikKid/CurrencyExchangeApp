@@ -1,14 +1,14 @@
 package org.example.controller;
 
+import org.example.DTO.CurrencyNBU;
 import org.example.model.Currency;
 import org.example.model.CurrencyList;
 import org.example.service.RestCurrencyService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -49,6 +49,29 @@ public class RestCurrencyController {
 
         return currency == null ? ResponseEntity.notFound().build()
                                 : new ResponseEntity<>(currency, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/pb")
+    public ResponseEntity<List<Currency>> getCurrenciesPB() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5";
+        ResponseEntity<List<Currency>> response = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<Currency>>() {});
+        List<Currency> currencies = response.getBody();
+        return new ResponseEntity<>(currencies, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/nbu")
+    public ResponseEntity<List<CurrencyNBU>> getCurrenciesNBU() {
+        String url = "https://bank.gov.ua/NBU_Exchange/exchange?json";
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        List<CurrencyNBU> currencies = restTemplate.exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<CurrencyNBU>>() {})
+                .getBody();
+        return new ResponseEntity<>(currencies, headers, HttpStatus.OK);
     }
 
     @PostMapping
